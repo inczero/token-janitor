@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: {{ .Values.job.namespace }}
+  name: {{ .Values.job.name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.job.name }}
+    spec:
+      containers:
+        - name: {{ .Values.job.name }}
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+      restartPolicy: {{ .Values.job.restartPolicy }}
+  backoffLimit: {{ .Values.job.backoffLimit }}

@@ -7,4 +7,5 @@ job:
   namespace: "pir-intrusion-detection"
   name: "token-janitor"
   schedule: "0 10 1 * *"
-  restartPolicy: OnFailure
+  restartPolicy: Never
+  backoffLimit: 3
