@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  namespace: {{ .Values.job.namespace }}
+  name: {{ .Values.job.name }}
+spec:
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {{ .Values.job.name }}
+        spec:
+          containers:
+            - name: {{ .Values.job.name }}
+              image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+              imagePullPolicy: {{ .Values.image.pullPolicy }}
+              args:
+                - sh
+                - -c
+                - |
+                  sleep 10
+                  whoami
+          restartPolicy: {{ .Values.job.restartPolicy }}
+  schedule: {{ .Values.job.schedule }}
