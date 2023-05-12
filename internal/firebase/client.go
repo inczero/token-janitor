@@ -5,6 +5,7 @@ import (
 	firebase "firebase.google.com/go/v4"
 	"firebase.google.com/go/v4/auth"
 	"firebase.google.com/go/v4/db"
+	"firebase.google.com/go/v4/messaging"
 	"google.golang.org/api/option"
 	"log"
 )
@@ -13,6 +14,7 @@ type Client struct {
 	app  *firebase.App
 	auth *auth.Client
 	db   *db.Client
+	msg  *messaging.Client
 }
 
 func InitClient(databaseURL string, credentialsJSON []byte) (*Client, error) {
@@ -44,6 +46,13 @@ func InitClient(databaseURL string, credentialsJSON []byte) (*Client, error) {
 	}
 
 	client.db = dbClient
+
+	msgClient, mErr := app.Messaging(context.Background())
+	if mErr != nil {
+		return nil, mErr
+	}
+
+	client.msg = msgClient
 
 	return client, nil
 }
