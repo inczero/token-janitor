@@ -3,8 +3,6 @@ package firebase
 import (
 	"context"
 	"fmt"
-	"strconv"
-	"time"
 )
 
 const (
@@ -14,17 +12,17 @@ const (
 )
 
 type RegistrationToken struct {
-	CreatedOn  time.Time
-	Deprecated bool
-	Rotated    bool
-	Token      string
+	CreatedOn  int64  `json:"createdOn"`
+	Deprecated bool   `json:"deprecated"`
+	Rotated    bool   `json:"rotated"`
+	Token      string `json:"token"`
 }
 
-func (c *Client) GetUserRTs(uid string) (map[int]RegistrationToken, error) {
+func (c *Client) GetUserRTs(uid string) (map[string]RegistrationToken, error) {
 	path := fmt.Sprintf(PathToRegistrationTokens, uid)
 	ref := c.db.NewRef(path)
 
-	var tokens map[int]RegistrationToken
+	var tokens map[string]RegistrationToken
 	if err := ref.Get(context.Background(), &tokens); err != nil {
 		return nil, err
 	}
@@ -32,8 +30,8 @@ func (c *Client) GetUserRTs(uid string) (map[int]RegistrationToken, error) {
 	return tokens, nil
 }
 
-func (c *Client) SetUserRTDeprecated(uid string, number int, deprecated bool) error {
-	path := fmt.Sprintf(PathToRegistrationTokenDeprecated, uid, strconv.Itoa(number))
+func (c *Client) SetUserRTDeprecated(uid string, id string, deprecated bool) error {
+	path := fmt.Sprintf(PathToRegistrationTokenDeprecated, uid, id)
 	ref := c.db.NewRef(path)
 
 	if err := ref.Set(context.Background(), deprecated); err != nil {
@@ -43,8 +41,8 @@ func (c *Client) SetUserRTDeprecated(uid string, number int, deprecated bool) er
 	return nil
 }
 
-func (c *Client) SetUserRTRotated(uid string, number int, rotated bool) error {
-	path := fmt.Sprintf(PathToRegistrationTokenRotated, uid, strconv.Itoa(number))
+func (c *Client) SetUserRTRotated(uid string, id string, rotated bool) error {
+	path := fmt.Sprintf(PathToRegistrationTokenRotated, uid, id)
 	ref := c.db.NewRef(path)
 
 	if err := ref.Set(context.Background(), rotated); err != nil {
