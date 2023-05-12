@@ -18,8 +18,6 @@ type Client struct {
 }
 
 func InitClient(databaseURL string, credentialsJSON []byte) (*Client, error) {
-	client := new(Client)
-
 	conf := &firebase.Config{
 		DatabaseURL: databaseURL,
 	}
@@ -31,28 +29,27 @@ func InitClient(databaseURL string, credentialsJSON []byte) (*Client, error) {
 		log.Fatal(newErr)
 	}
 
-	client.app = app
-
 	authClient, authErr := app.Auth(context.Background())
 	if authErr != nil {
 		return nil, authErr
 	}
-
-	client.auth = authClient
 
 	dbClient, dbErr := app.Database(context.Background())
 	if dbErr != nil {
 		return nil, dbErr
 	}
 
-	client.db = dbClient
-
 	msgClient, mErr := app.Messaging(context.Background())
 	if mErr != nil {
 		return nil, mErr
 	}
 
-	client.msg = msgClient
+	client := Client{
+		app:  app,
+		auth: authClient,
+		db:   dbClient,
+		msg:  msgClient,
+	}
 
-	return client, nil
+	return &client, nil
 }
