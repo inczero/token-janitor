@@ -9,6 +9,7 @@ const (
 	PathToRegistrationTokens          = "/users/%s/fcmRegistrationTokens"               // %s - user's id
 	PathToRegistrationTokenDeprecated = "/users/%s/fcmRegistrationTokens/%s/deprecated" // %s - user's id, %s - number of token
 	PathToRegistrationTokenRotated    = "/users/%s/fcmRegistrationTokens/%s/rotated"    // %s - user's id, %s - number of token
+	PathToRegistrationToken           = "/users/%s/fcmRegistrationTokens/%s"            // %s - user's id, %s - number of token
 )
 
 type RegistrationToken struct {
@@ -46,6 +47,17 @@ func (c *Client) SetUserRTRotated(uid string, id string, rotated bool) error {
 	ref := c.db.NewRef(path)
 
 	if err := ref.Set(context.Background(), rotated); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) DeleteUserRT(uid string, id string) error {
+	path := fmt.Sprintf(PathToRegistrationToken, uid, id)
+	ref := c.db.NewRef(path)
+
+	if err := ref.Delete(context.Background()); err != nil {
 		return err
 	}
 
