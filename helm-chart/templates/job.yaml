@@ -5,13 +5,15 @@ metadata:
   name: {{ .Values.job.name }}
 spec:
   template:
-    metadata:
-      labels:
-        app: {{ .Values.job.name }}
     spec:
       containers:
         - name: {{ .Values.job.name }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.config.name }}
+            - secretRef:
+                name: {{ .Values.secret.name }}
       restartPolicy: {{ .Values.job.restartPolicy }}
   backoffLimit: {{ .Values.job.backoffLimit }}

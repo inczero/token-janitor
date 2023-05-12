@@ -7,9 +7,6 @@
 {{/*  jobTemplate:*/}}
 {{/*    spec:*/}}
 {{/*      template:*/}}
-{{/*        metadata:*/}}
-{{/*          labels:*/}}
-{{/*            app: {{ .Values.job.name }}*/}}
 {{/*        spec:*/}}
 {{/*          containers:*/}}
 {{/*            - name: {{ .Values.job.name }}*/}}

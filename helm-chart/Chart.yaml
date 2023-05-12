@@ -1,4 +1,4 @@
 apiVersion: v1
-name: pir-intrusion-detection
-description: A Helm chart for PIRID
+name: token-janitor
+description: A Helm chart for the token-janitor
 version: 1.0.0

@@ -1,6 +1,6 @@
 image:
   name: "token-janitor"
-  tag: "dev1"
+  tag: "no-version"
   pullPolicy: IfNotPresent
 
 job:
@@ -9,3 +9,12 @@ job:
   schedule: "0 10 1 * *"
   restartPolicy: Never
   backoffLimit: 3
+
+config:
+  name: "token-janitor-config-map"
+  firebaseDatabaseURL: "https://<name>.<region>.firebasedatabase.app/"
+  googleCloudProjectId: "best-project-ever"
+
+secret:
+  name: "token-janitor-secret"
+  secretManagerCredential: "credential-json-in-base64"
