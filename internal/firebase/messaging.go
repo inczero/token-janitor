@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	// Firebase Cloud Messaging error messages
+	// Firebase Cloud Messaging messages
+	FCMTokenActive               = "FCM registration token is active"
 	FCMTokenUnregisteredError    = "FCM registration token was unregistered"
 	FCMTokenInvalidArgumentError = "FCM registration token is invalid"
 )
@@ -24,19 +25,19 @@ func (c *Client) sendMessageDryRun(token string) error {
 	return err
 }
 
-func (c *Client) IsTokenActive(token string) (bool, error) {
+func (c *Client) DetectInvalidToken(token string) error {
 	err := c.sendMessageDryRun(token)
 	if err != nil {
 		if messaging.IsInvalidArgument(err) {
-			return false, fmt.Errorf(FCMTokenInvalidArgumentError)
+			return fmt.Errorf(FCMTokenInvalidArgumentError)
 		}
 
 		if messaging.IsUnregistered(err) {
-			return false, fmt.Errorf(FCMTokenUnregisteredError)
+			return fmt.Errorf(FCMTokenUnregisteredError)
 		}
 
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }
