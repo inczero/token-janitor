@@ -1,5 +1,8 @@
 #!/bin/bash -e
 
-echo "this script will build the container image"
+IMAGE_NAME="token-janitor"
+TAG=$(date +"%Y%m%d-%H%M%S")
 
-docker build -t token-janitor:"$TAG" .
+echo "Building $IMAGE_NAME:$TAG..."
+
+docker build -t "$IMAGE_NAME":"$TAG" .
