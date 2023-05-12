@@ -9,23 +9,30 @@ import (
 )
 
 func main() {
-	fmt.Println("Starting token-janitor...")
+	fmt.Printf("Starting token-janitor...\n\n")
 
+	fmt.Println("Setting up configuration...")
 	conf, newErr := config.NewConfig()
 	if newErr != nil {
 		log.Fatalln(newErr)
 	}
+	fmt.Printf("OK\n\n")
 
+	fmt.Println("Initializing Firebase clients...")
 	client, initErr := firebase.InitClient(conf.FirebaseDbURL, conf.FirebaseSACred)
 	if initErr != nil {
 		log.Fatalln(initErr)
 	}
+	fmt.Printf("OK\n\n")
 
+	fmt.Println("Getting users...")
 	users, getErr := client.GetAllUsers()
 	if getErr != nil {
 		log.Fatalln(getErr)
 	}
+	fmt.Printf("OK\n\n")
 
+	fmt.Println("Checking registration tokens...")
 	for _, user := range users {
 		tokens, err := client.GetUserRTs(user.UID)
 		if err != nil {
@@ -36,6 +43,9 @@ func main() {
 			log.Fatalln(checkErr)
 		}
 	}
+	fmt.Printf("OK\n\n")
+
+	fmt.Printf("Finished at %s\n", time.Now())
 }
 
 func checkTokens(client *firebase.Client, uid string, tokens map[string]firebase.RegistrationToken) error {
