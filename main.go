@@ -44,6 +44,7 @@ func main() {
 }
 
 func checkTokens(client *firebase.Client, uid string, tokens map[string]firebase.RegistrationToken) error {
+	// TODO: fix logging messages + handle different type of errors
 	for id, token := range tokens {
 		if token.Rotated {
 			if token.Deprecated {
