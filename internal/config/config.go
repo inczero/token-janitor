@@ -9,15 +9,14 @@ import (
 const (
 	SecretManagerCredential = "SM_CREDENTIAL"
 	FirebaseDatabaseURL     = "FIREBASE_DB_URL"
-
-	GoogleCloudProjectId = "GCP_PROJECT_ID"
+	GoogleCloudProjectId    = "GCP_PROJECT_ID"
 
 	// SMSecretFirebaseServiceAccount - name of Firebase service account credential secret inside Secret Manager
 	SMSecretFirebaseServiceAccount = "firebase-service-account-credentials"
 )
 
 type Config struct {
-	FirebaseDbURL  string
+	FirebaseDbURL  string // Firebase Realtime Database URL
 	FirebaseSACred []byte // Firebase Service Account Credential JSON
 }
 
