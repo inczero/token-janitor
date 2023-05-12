@@ -33,12 +33,13 @@ func main() {
 	fmt.Printf("OK\n\n")
 
 	fmt.Println("Checking registration tokens...")
-	for _, user := range users {
+	for i, user := range users {
 		tokens, err := client.GetUserRTs(user.UID)
 		if err != nil {
 			log.Fatalln(err)
 		}
 
+		fmt.Printf("%d. user with id '%s'\n", i+1, user.UID)
 		if checkErr := checkTokens(client, user.UID, tokens); checkErr != nil {
 			log.Fatalln(checkErr)
 		}
@@ -52,41 +53,41 @@ func checkTokens(client *firebase.Client, uid string, tokens map[string]firebase
 	i := 1
 
 	for id, token := range tokens {
-		fmt.Printf("%d. token with id '%s':\n", i, id)
+		fmt.Printf("\t%d. token with id '%s':\n", i, id)
 
 		if err := client.DetectInvalidToken(token.Token); err == nil {
-			fmt.Printf("\tstatus: %s\n", firebase.FCMTokenActive)
+			fmt.Printf("\t\tstatus: %s\n", firebase.FCMTokenActive)
 
 			if isOld := isOlderThan30Days(token.CreatedOn); isOld {
 				if token.Deprecated {
 					if token.Rotated {
-						fmt.Printf("\ttoken was rotated, but it is still active - needs checking\n")
+						fmt.Printf("\t\ttoken was rotated, but it is still active - needs checking\n")
 					} else {
-						fmt.Printf("\ttoken already marked as deprecated\n")
+						fmt.Printf("\t\ttoken already marked as deprecated\n")
 					}
 				} else {
-					fmt.Printf("\ttoken was created more than 30 days ago\n")
-					fmt.Printf("\tmarking as deprecated...\n")
+					fmt.Printf("\t\ttoken was created more than 30 days ago\n")
+					fmt.Printf("\t\tmarking as deprecated...\n")
 
 					if setErr := client.SetUserRTDeprecated(uid, id, true); setErr != nil {
-						fmt.Printf("\tcould not mark token as deprecated - error: %s\n", setErr.Error())
+						fmt.Printf("\t\tcould not mark token as deprecated - error: %s\n", setErr.Error())
 					} else {
-						fmt.Printf("\tdone\n")
+						fmt.Printf("\t\tdone\n")
 					}
 				}
 			} else {
-				fmt.Printf("\ttoken was created in the last 30 days\n")
+				fmt.Printf("\t\ttoken was created in the last 30 days\n")
 			}
 		} else {
 			if err.Error() == firebase.FCMTokenInvalidArgumentError || err.Error() == firebase.FCMTokenUnregisteredError {
-				fmt.Printf("\tstatus: %s\n", err.Error())
-				fmt.Printf("\tinfo: deprecated-%t rotated-%t\n", token.Deprecated, token.Rotated)
-				fmt.Printf("\tdeleting...\n")
+				fmt.Printf("\t\tstatus: %s\n", err.Error())
+				fmt.Printf("\t\tinfo: deprecated-%t rotated-%t\n", token.Deprecated, token.Rotated)
+				fmt.Printf("\t\tdeleting...\n")
 
 				if delErr := client.DeleteUserRT(uid, id); delErr != nil {
-					fmt.Printf("\tcould not delete token - error: %s\n", delErr.Error())
+					fmt.Printf("\t\tcould not delete token - error: %s\n", delErr.Error())
 				} else {
-					fmt.Printf("\tdone\n")
+					fmt.Printf("\t\tdone\n")
 				}
 			} else {
 				return err
