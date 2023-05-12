@@ -2,26 +2,21 @@ package main
 
 import (
 	"fmt"
+	"github.com/inczero/token-janitor/internal/config"
 	"github.com/inczero/token-janitor/internal/firebase"
 	"log"
-	"os"
 	"time"
-)
-
-const (
-	FirebasePathToKey   = "path/to/key"
-	FirebaseDatabaseURL = "db-url"
 )
 
 func main() {
 	fmt.Println("Starting token-janitor...")
 
-	key, readErr := os.ReadFile(FirebasePathToKey)
-	if readErr != nil {
-		log.Fatalln(readErr)
+	conf, newErr := config.NewConfig()
+	if newErr != nil {
+		log.Fatalln(newErr)
 	}
 
-	client, initErr := firebase.InitClient(FirebaseDatabaseURL, key)
+	client, initErr := firebase.InitClient(conf.FirebaseDbURL, conf.FirebaseSACred)
 	if initErr != nil {
 		log.Fatalln(initErr)
 	}
