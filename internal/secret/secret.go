@@ -9,11 +9,17 @@ import (
 	"google.golang.org/api/option"
 )
 
+const (
+	// SMSecretPath - Secret Manager path to latest secret version
+	SMSecretPath = "projects/%s/secrets/%s/versions/latest" // %s - project id, %s - secret name
+)
+
 type Client struct {
-	client *sm.Client
+	client      *sm.Client
+	projectName string
 }
 
-func NewClient(credentialsBase64 string) (*Client, error) {
+func NewClient(projectName string, credentialsBase64 string) (*Client, error) {
 	// decode credentials JSON
 	credJSON, decErr := base64.StdEncoding.DecodeString(credentialsBase64)
 	if decErr != nil {
@@ -27,22 +33,25 @@ func NewClient(credentialsBase64 string) (*Client, error) {
 		return nil, err
 	}
 
-	client := new(Client)
-	client.client = smClient
+	client := Client{
+		client:      smClient,
+		projectName: projectName,
+	}
 
-	return client, nil
+	return &client, nil
 }
 
-func (c *Client) GetSecretData(secretName string) (string, error) {
-	// TODO: maybe a different name is needed -> documentation takes version.name
+func (c *Client) GetSecretDataLatest(secretName string) ([]byte, error) {
+	secretPath := fmt.Sprintf(SMSecretPath, c.projectName, secretName)
+
 	versionReq := &secretmanagerpb.AccessSecretVersionRequest{
-		Name: secretName,
+		Name: secretPath,
 	}
 
 	result, err := c.client.AccessSecretVersion(context.Background(), versionReq)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return fmt.Sprintf("%s", result.Payload.Data), nil
+	return result.Payload.Data, nil
 }
