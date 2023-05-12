@@ -10,13 +10,15 @@ const (
 	SecretManagerCredential = "SM_CREDENTIAL"
 	FirebaseDatabaseURL     = "FIREBASE_DB_URL"
 
+	GoogleCloudProjectId = "GCP_PROJECT_ID"
+
 	// SMSecretFirebaseServiceAccount - name of Firebase service account credential secret inside Secret Manager
 	SMSecretFirebaseServiceAccount = "firebase-service-account-credentials"
 )
 
 type Config struct {
 	FirebaseDbURL  string
-	FirebaseSACred string // Firebase Service Account Credential JSON
+	FirebaseSACred []byte // Firebase Service Account Credential JSON
 }
 
 func NewConfig() (*Config, error) {
@@ -30,12 +32,17 @@ func NewConfig() (*Config, error) {
 		return nil, fmt.Errorf("environment variable '%s' not set", FirebaseDatabaseURL)
 	}
 
-	smClient, newErr := secret.NewClient(smCredBase64)
+	gcpProjectId, isSet3 := os.LookupEnv(GoogleCloudProjectId)
+	if !isSet3 {
+		return nil, fmt.Errorf("environment variable '%s' not set", GoogleCloudProjectId)
+	}
+
+	smClient, newErr := secret.NewClient(gcpProjectId, smCredBase64)
 	if newErr != nil {
 		return nil, newErr
 	}
 
-	firebaseCred, getErr := smClient.GetSecretData(SMSecretFirebaseServiceAccount)
+	firebaseCred, getErr := smClient.GetSecretDataLatest(SMSecretFirebaseServiceAccount)
 	if getErr != nil {
 		return nil, getErr
 	}
