@@ -3,6 +3,13 @@ package firebase
 import (
 	"context"
 	"firebase.google.com/go/v4/messaging"
+	"fmt"
+)
+
+const (
+	// Firebase Cloud Messaging error messages
+	FCMTokenUnregisteredError    = "FCM registration token was unregistered"
+	FCMTokenInvalidArgumentError = "FCM registration token is invalid"
 )
 
 func (c *Client) sendMessageDryRun(token string) error {
@@ -13,20 +20,22 @@ func (c *Client) sendMessageDryRun(token string) error {
 		Token: token,
 	}
 
-	// TODO: response and error will need some additional checking
 	_, err := c.msg.SendDryRun(context.Background(), message)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func (c *Client) IsTokenActive(token string) (bool, error) {
 	err := c.sendMessageDryRun(token)
 	if err != nil {
-		// TODO: check error message to determine if it needs to be returned
-		return false, nil
+		if messaging.IsInvalidArgument(err) {
+			return false, fmt.Errorf(FCMTokenInvalidArgumentError)
+		}
+
+		if messaging.IsUnregistered(err) {
+			return false, fmt.Errorf(FCMTokenUnregisteredError)
+		}
+
+		return false, err
 	}
 
 	return true, nil
