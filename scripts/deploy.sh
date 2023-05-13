@@ -1,8 +1,8 @@
 #!/bin/bash -e
 
-echo "this script will deploy the helm chart"
-echo ""
+RELEASE_NAME="token-janitor"
+NAMESPACE="pir-intrusion-detection"
 
-helm install token-janitor ./helm-chart --namespace pir-intrusion-detection
-helm upgrade token-janitor ./helm-chart --namespace pir-intrusion-detection
-#helm uninstall token-janitor --namespace pir-intrusion-detection
+echo "Deploying $RELEASE_NAME..."
+
+helm upgrade --install "$RELEASE_NAME" --values ./real-values.yaml ./helm-chart --namespace "$NAMESPACE"
