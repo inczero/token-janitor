@@ -21,7 +21,7 @@ type Config struct {
 }
 
 func NewConfig() (*Config, error) {
-	smCredBase64, isSet1 := os.LookupEnv(SecretManagerCredential)
+	smCred, isSet1 := os.LookupEnv(SecretManagerCredential)
 	if !isSet1 {
 		return nil, fmt.Errorf("environment variable '%s' not set", SecretManagerCredential)
 	}
@@ -36,7 +36,7 @@ func NewConfig() (*Config, error) {
 		return nil, fmt.Errorf("environment variable '%s' not set", GoogleCloudProjectId)
 	}
 
-	smClient, newErr := secret.NewClient(gcpProjectId, smCredBase64)
+	smClient, newErr := secret.NewClient(gcpProjectId, smCred)
 	if newErr != nil {
 		return nil, newErr
 	}

@@ -4,7 +4,6 @@ import (
 	sm "cloud.google.com/go/secretmanager/apiv1"
 	"cloud.google.com/go/secretmanager/apiv1/secretmanagerpb"
 	"context"
-	"encoding/base64"
 	"fmt"
 	"google.golang.org/api/option"
 )
@@ -19,14 +18,8 @@ type Client struct {
 	projectName string
 }
 
-func NewClient(projectName string, credentialsBase64 string) (*Client, error) {
-	// decode credentials JSON
-	credJSON, decErr := base64.StdEncoding.DecodeString(credentialsBase64)
-	if decErr != nil {
-		return nil, decErr
-	}
-
-	opt := option.WithCredentialsJSON(credJSON)
+func NewClient(projectName string, credentials string) (*Client, error) {
+	opt := option.WithCredentialsJSON([]byte(credentials))
 
 	smClient, err := sm.NewClient(context.Background(), opt)
 	if err != nil {
