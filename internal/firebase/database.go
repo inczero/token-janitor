@@ -19,6 +19,8 @@ type RegistrationToken struct {
 	Token      string `json:"token"`
 }
 
+// GetUserRTs function returns a map which contains the Firebase Cloud Messaging Registration Tokens that belong to a
+// user along with other metadata. The keys are UUIDs generated when the tokens are added to the database.
 func (c *Client) GetUserRTs(uid string) (map[string]RegistrationToken, error) {
 	path := fmt.Sprintf(PathToRegistrationTokens, uid)
 	ref := c.db.NewRef(path)
@@ -31,6 +33,8 @@ func (c *Client) GetUserRTs(uid string) (map[string]RegistrationToken, error) {
 	return tokens, nil
 }
 
+// SetUserRTDeprecated function sets the deprecated field of a user's Firebase Cloud Messaging Registration Token. By
+// setting this to true, it marks the token for rotation which will be done by application on the user's smartphone.
 func (c *Client) SetUserRTDeprecated(uid string, id string, deprecated bool) error {
 	path := fmt.Sprintf(PathToRegistrationTokenDeprecated, uid, id)
 	ref := c.db.NewRef(path)
@@ -42,6 +46,7 @@ func (c *Client) SetUserRTDeprecated(uid string, id string, deprecated bool) err
 	return nil
 }
 
+// SetUserRTRotated function sets the rotated field of a user's Firebase Cloud Messaging Registration Token.
 func (c *Client) SetUserRTRotated(uid string, id string, rotated bool) error {
 	path := fmt.Sprintf(PathToRegistrationTokenRotated, uid, id)
 	ref := c.db.NewRef(path)
@@ -53,6 +58,7 @@ func (c *Client) SetUserRTRotated(uid string, id string, rotated bool) error {
 	return nil
 }
 
+// DeleteUserRT function deletes the Firebase Cloud Messaging Registration Token entry from the database.
 func (c *Client) DeleteUserRT(uid string, id string) error {
 	path := fmt.Sprintf(PathToRegistrationToken, uid, id)
 	ref := c.db.NewRef(path)

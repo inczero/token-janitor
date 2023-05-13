@@ -13,6 +13,9 @@ const (
 	FCMTokenInvalidArgumentError = "FCM registration token is invalid"
 )
 
+// sendMessageDryRun function sends a message in dry run mode (every operation is done on the backend except the
+// message sending at the end) to the client app instance from which the Firebase Cloud Messaging Registration
+// Token was generated.
 func (c *Client) sendMessageDryRun(token string) error {
 	message := &messaging.Message{
 		Data: map[string]string{
@@ -25,6 +28,8 @@ func (c *Client) sendMessageDryRun(token string) error {
 	return err
 }
 
+// DetectInvalidToken function determines if a Firebase Cloud Messaging Registration Token is still valid by sending
+// a message in dry run mode.
 func (c *Client) DetectInvalidToken(token string) error {
 	err := c.sendMessageDryRun(token)
 	if err != nil {
