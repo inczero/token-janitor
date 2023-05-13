@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN go build -o tj
+RUN CGO_ENABLED=0 GOOS=linux go build -o tj
 
 FROM alpine:3.17.3
 
