@@ -8,7 +8,7 @@ job:
   name: "token-janitor"
   schedule: "0 10 1 * *"
   restartPolicy: Never
-  backoffLimit: 3
+  backoffLimit: 1
 
 config:
   name: "token-janitor-config-map"

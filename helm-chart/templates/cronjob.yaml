@@ -12,11 +12,10 @@
 {{/*            - name: {{ .Values.job.name }}*/}}
 {{/*              image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"*/}}
 {{/*              imagePullPolicy: {{ .Values.image.pullPolicy }}*/}}
-{{/*              args:*/}}
-{{/*                - sh*/}}
-{{/*                - -c*/}}
-{{/*                - |*/}}
-{{/*                  sleep 10*/}}
-{{/*                  whoami*/}}
+{{/*              envFrom:*/}}
+{{/*                - configMapRef:*/}}
+{{/*                    name: {{ .Values.config.name }}*/}}
+{{/*                - secretRef:*/}}
+{{/*                    name: {{ .Values.secret.name }}*/}}
 {{/*          restartPolicy: {{ .Values.job.restartPolicy }}*/}}
 {{/*  schedule: {{ .Values.job.schedule }}*/}}
